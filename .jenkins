@@ -189,6 +189,7 @@ pipeline {
                     
                     sh "echo '$kubernetesFolderName/${path_to_helm_folder}'"
                     // sh "echo '$values_yaml' > $kubernetesFolderName/${path_to_helm_folder}/values.yaml"
+                    sh "kubectl get nodes"
                     
                     
                 }
