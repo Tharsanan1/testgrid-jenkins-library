@@ -117,19 +117,19 @@ pipeline {
 			"""),
                             string(
                                 name: 'kubernetes_repo_url',
-                                defaultValue: 'https://github.com/Tharsanan1/apim-kubernetes-personal',
+                                defaultValue: 'https://github.com/Tharsanan1/kubernetes-apim',
                                 description: "Product's kubernetes repository URL.",
                                 trim: true
                             ),
                             string(
                                 name: 'kubernetes_repo_branch',
-                                defaultValue: 'main',
+                                defaultValue: 'tharsanan-apim-automation',
                                 description: 'Branch name of the kubernetes repository.',
                                 trim: true
                             ),
                             string(
                                 name: 'path_to_helm_folder',
-                                defaultValue: 'helm',
+                                defaultValue: 'advanced/am-pattern-1',
                                 description: 'Relative path of the helm folder in your helm repository.',
                                 trim: true
                             ),
@@ -187,8 +187,7 @@ pipeline {
                     echo "%^%^%^^%^%^%^^hellooooooooooooooooooo"
                     echo "$values_yaml"
                     
-                    sh "echo '$kubernetesFolderName/${path_to_helm_folder}'"
-                    // sh "echo '$values_yaml' > $kubernetesFolderName/${path_to_helm_folder}/values.yaml"
+                    sh "echo '$values_yaml' > $kubernetesFolderName/${path_to_helm_folder}/values.yaml"
                     withCredentials([[
                         $class: 'AmazonWebServicesCredentialsBinding',
                         credentialsId: "aws-creds-tharsanan	",
@@ -235,7 +234,14 @@ pipeline {
             steps {
                 script {
                     echo "Deploy into cluster stage $WORKSPACE $kubernetes_namespace"
-                    
+                    withCredentials([[
+                        $class: 'AmazonWebServicesCredentialsBinding',
+                        credentialsId: "aws-creds-tharsanan	",
+                        accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+                        secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
+                    ]]) {
+                        sh "helm install am-pattern-1 $kubernetesFolderName/${path_to_helm_folder}"
+                    }
                 }
             }
         }
