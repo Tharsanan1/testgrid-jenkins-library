@@ -181,9 +181,6 @@ pipeline {
                     dir(kubernetesFolderName) {
                         git branch: "${kubernetes_repo_branch}", url: "${kubernetes_repo_url}"
                     }
-                    sh '''
-                        sh "chmod +x -R ${env.WORKSPACE}"
-                    '''
                 }
             }
         }
@@ -192,6 +189,7 @@ pipeline {
                 script {
                     echo "Build product stage"
                     echo "file directory"
+                    sh "chmod +x -R ${env.WORKSPACE}"
                     sh '''
                         pwd
                         ls
