@@ -8,7 +8,7 @@ pipeline {
 
                     properties([
                         parameters([
-                            file(fileLocation:'list.txt', description:'contains list of projects to be build'),
+                            file(fileLocation:'values', description:'Description of file parameter.'),
 
 
                             separator(name: "PRODUCT_ENVIRONMENT", sectionHeader: "Product Details",
@@ -182,7 +182,9 @@ pipeline {
                     dir(kubernetesFolderName) {
                         git branch: "${kubernetes_repo_branch}", url: "${kubernetes_repo_url}"
                     }
-                    sh "cat $filein"
+                    withFileParameter('values') {
+                        sh 'cat $values'
+                    }
                 }
             }
         }
