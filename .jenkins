@@ -8,7 +8,7 @@ pipeline {
 
                     properties([
                         parameters([
-                            file(name:'values'),
+                            stashedFile 'values'
 
 
                             separator(name: "PRODUCT_ENVIRONMENT", sectionHeader: "Product Details",
@@ -184,7 +184,8 @@ pipeline {
                     }
                     withFileParameter('values') {
                         echo "%^%^%^^%^%^%^^hellooooooooooooooooooo"
-                        sh 'cat $values'
+                        unstash 'large'
+                        sh 'cat $large'
                     }
                 }
             }
