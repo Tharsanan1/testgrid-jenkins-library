@@ -8,7 +8,7 @@ pipeline {
 
                     properties([
                         parameters([
-                            file (name : 'filein'),
+                            file(fileLocation:'list.txt', description:'contains list of projects to be build'),
 
 
                             separator(name: "PRODUCT_ENVIRONMENT", sectionHeader: "Product Details",
