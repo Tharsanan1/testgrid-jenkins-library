@@ -8,7 +8,7 @@ pipeline {
 
                     properties([
                         parameters([
-                            stashedFile 'values'
+                            stashedFile 'values',
 
 
                             separator(name: "PRODUCT_ENVIRONMENT", sectionHeader: "Product Details",
