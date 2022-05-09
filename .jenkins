@@ -5,9 +5,6 @@ pipeline {
             steps {
                 script {
                     // deleteDir()
-                    sh """
-                        ls -al
-                    """
                     properties([
                         parameters([
                             separator(name: "PRODUCT_ENVIRONMENT", sectionHeader: "Product Details",
@@ -191,8 +188,6 @@ pipeline {
                     echo "file directory"
                     sh "chmod +x -R ${env.WORKSPACE}"
                     sh '''
-                        pwd
-                        ls
                         ./scripts-cluster/create-cluster.sh
                     '''
                 }
@@ -212,9 +207,7 @@ pipeline {
             steps {
                 script {
                     echo "Deploy into cluster stage $WORKSPACE $kubernetes_namespace"
-                    sh """
-                        helm install --create-namespace -n "$kubernetes_namespace" "$product_name" "$WORKSPACE"/"kubernetes-$product_name"/"$path_to_helm_folder"
-                    """
+                    
                 }
             }
         }
