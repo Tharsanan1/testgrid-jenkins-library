@@ -183,6 +183,7 @@ pipeline {
                         git branch: "${kubernetes_repo_branch}", url: "${kubernetes_repo_url}"
                     }
                     withFileParameter('values') {
+                        echo "%^%^%^^%^%^%^^hellooooooooooooooooooo"
                         sh 'cat $values'
                     }
                 }
