@@ -8,7 +8,7 @@ pipeline {
 
                     properties([
                         parameters([
-                            file (name : 'File in'),
+                            file (name : 'filein'),
 
 
                             separator(name: "PRODUCT_ENVIRONMENT", sectionHeader: "Product Details",
@@ -182,6 +182,7 @@ pipeline {
                     dir(kubernetesFolderName) {
                         git branch: "${kubernetes_repo_branch}", url: "${kubernetes_repo_url}"
                     }
+                    sh "cat $filein"
                 }
             }
         }
