@@ -8,9 +8,6 @@ pipeline {
 
                     properties([
                         parameters([
-                            stashedFile 'values',
-
-
                             separator(name: "PRODUCT_ENVIRONMENT", sectionHeader: "Product Details",
 			separatorStyle: "border-width: 0",
 			sectionHeaderStyle: """
@@ -142,6 +139,12 @@ pipeline {
                                 description: 'namespace to be deployed.',
                                 trim: true
                             ),
+                            text(
+                                defaultValue: '''
+                                Place your values yaml file content here
+                                ''', 
+                                 name: 'values_yaml'
+                            ),
                             separator(name: "TESTING ENVIRONMENT", sectionHeader: "Testing Details",
 			separatorStyle: "border-width: 0",
 			sectionHeaderStyle: """
@@ -184,8 +187,7 @@ pipeline {
                     }
                     withFileParameter('values') {
                         echo "%^%^%^^%^%^%^^hellooooooooooooooooooo"
-                        unstash 'large'
-                        sh 'cat $large'
+                        echo "$values_yaml"
                     }
                 }
             }
