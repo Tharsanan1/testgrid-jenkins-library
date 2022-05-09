@@ -198,8 +198,10 @@ pipeline {
                 script {
                     echo "Build product stage"
                     echo "file directory"
-                    pwd
-                    ls
+                    sh '''
+                        pwd
+                        ls
+                    '''
                 }
             }
         }
