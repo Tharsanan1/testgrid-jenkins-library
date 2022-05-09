@@ -185,10 +185,10 @@ pipeline {
                     dir(kubernetesFolderName) {
                         git branch: "${kubernetes_repo_branch}", url: "${kubernetes_repo_url}"
                     }
-                    withFileParameter('values') {
-                        echo "%^%^%^^%^%^%^^hellooooooooooooooooooo"
-                        echo "$values_yaml"
-                    }
+                    
+                    echo "%^%^%^^%^%^%^^hellooooooooooooooooooo"
+                    echo "$values_yaml"
+                    
                 }
             }
         }
