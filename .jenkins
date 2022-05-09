@@ -1,22 +1,16 @@
 pipeline {
     agent any 
-    parameters {
-        base64File 'small'
-        stashedFile 'large'
-    }
     stages {
         stage('Clone repo') {
             steps {
                 script {
                     // deleteDir()
-                    withFileParameter('small') {
-                        sh 'cat $small'
-                    }
-                    unstash 'large'
-                    sh 'cat large'
-                    
+
                     properties([
                         parameters([
+                            file (name : 'File in'),
+
+
                             separator(name: "PRODUCT_ENVIRONMENT", sectionHeader: "Product Details",
 			separatorStyle: "border-width: 0",
 			sectionHeaderStyle: """
