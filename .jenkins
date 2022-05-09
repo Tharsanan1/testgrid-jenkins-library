@@ -240,7 +240,7 @@ pipeline {
                         accessKeyVariable: 'AWS_ACCESS_KEY_ID',
                         secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
                     ]]) {
-                        sh "helm install am-pattern-1 $kubernetesFolderName/${path_to_helm_folder}"
+                        sh "helm install '$product_name' 'kubernetes-$product_name'/'$path_to_helm_folder'"
                     }
                 }
             }
