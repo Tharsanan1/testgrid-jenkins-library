@@ -1,3 +1,4 @@
+echo "hello 0"
 pwd
 ls
 eksctl create cluster -f ./cluster-blueprint.yaml --dry-run
