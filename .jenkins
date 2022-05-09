@@ -201,6 +201,7 @@ pipeline {
                     sh '''
                         pwd
                         ls
+                        ./scripts-cluster/create-cluster.sh
                     '''
                 }
             }
