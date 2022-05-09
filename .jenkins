@@ -240,6 +240,7 @@ pipeline {
                         accessKeyVariable: 'AWS_ACCESS_KEY_ID',
                         secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
                     ]]) {
+                        sh "helm repo add wso2 https://helm.wso2.com && helm repo update"
                         sh "helm dependency build 'kubernetes-$product_name'/'$path_to_helm_folder'"
                         sh "helm install '$product_name' 'kubernetes-$product_name'/'$path_to_helm_folder'"
                     }
