@@ -140,10 +140,8 @@ pipeline {
                                 trim: true
                             ),
                             text(
-                                defaultValue: '''
-                                Place your values yaml file content here
-                                ''', 
-                                 name: 'values_yaml'
+                                description: 'Place your values.yaml file content here.',
+                                name: 'values_yaml'
                             ),
                             separator(name: "TESTING ENVIRONMENT", sectionHeader: "Testing Details",
 			separatorStyle: "border-width: 0",
