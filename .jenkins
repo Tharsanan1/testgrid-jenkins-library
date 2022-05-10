@@ -175,12 +175,15 @@ pipeline {
                     def cnfFolderName = "cnf-${product_name}"
                     def kubernetesFolderName = "kubernetes-${product_name}"
                     dir("${product_name}") {
+                        deleteDir()
                         git branch: "${product_repo_branch}", url: "${product_repo_url}"
                     }
                     dir(cnfFolderName) {
+                        deleteDir()
                         git branch: "${cnf_repo_branch}", url: "${cnf_repo_url}"
                     }
                     dir(kubernetesFolderName) {
+                        deleteDir()
                         git branch: "${kubernetes_repo_branch}", url: "${kubernetes_repo_url}"
                     }
                     
