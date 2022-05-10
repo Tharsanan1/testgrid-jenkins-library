@@ -188,16 +188,6 @@ pipeline {
                     echo "$values_yaml"
                     
                     sh "echo '$values_yaml' > $kubernetesFolderName/${path_to_helm_folder}/values.yaml"
-                    withCredentials([[
-                        $class: 'AmazonWebServicesCredentialsBinding',
-                        credentialsId: "aws-creds-tharsanan	",
-                        accessKeyVariable: 'AWS_ACCESS_KEY_ID',
-                        secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
-                    ]]) {
-                        sh "kubectl get nodes"
-                    }
-                    
-                    
                 }
             }
         }
