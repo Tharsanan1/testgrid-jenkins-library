@@ -185,7 +185,6 @@ pipeline {
                     }
                     
                     echo "%^%^%^^%^%^%^^hellooooooooooooooooooo"
-                    echo "$values_yaml"
                     
                     sh "echo '$values_yaml' > $kubernetesFolderName/${path_to_helm_folder}/values.yaml"
                 }
