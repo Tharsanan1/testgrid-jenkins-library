@@ -185,7 +185,7 @@ pipeline {
                     }
                     
                     echo "%^%^%^^%^%^%^^hellooooooooooooooooooo"
-                    echo "@values_yaml"
+                    echo "$values_yaml"
                     echo "====sper===="
                     sh "echo '$values_yaml' > $kubernetesFolderName/${path_to_helm_folder}/values.yaml"
                 }
