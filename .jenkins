@@ -237,7 +237,7 @@ pipeline {
                     ]]) {
                         sh "kubectl wait --namespace ingress-nginx --for=condition=ready pod --selector=app.kubernetes.io/component=controller --timeout=120s"
                         sh "helm repo add wso2 https://helm.wso2.com && helm repo update"
-                        sh "helm dep update ; helm dependency build 'kubernetes-$product_name'/'$path_to_helm_folder'"
+                        sh "helm dependency build 'kubernetes-$product_name'/'$path_to_helm_folder'"
                         sh "helm install '$product_name' 'kubernetes-$product_name'/'$path_to_helm_folder'"
                     }
                 }
