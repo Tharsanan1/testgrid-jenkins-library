@@ -266,8 +266,6 @@ pipeline {
                     }
                     
                     env.HOST_NAME=hostName
-                    // echo "from jenkins ${HOST_NAME}"
-                    sh 'printenv'
                        
                     dir("test-${product_name}/${test_file_path}") {
                         sh "./$test_entrypoint_filename"
