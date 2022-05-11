@@ -158,8 +158,14 @@ pipeline {
                                 trim: true
                             ),
                             string(
-                                name: 'testing_entrypoint_filepath',
-                                defaultValue: 'main',
+                                name: 'test_file_path',
+                                defaultValue: './',
+                                description: 'Testing entry point file path.',
+                                trim: true
+                            ),
+                            string(
+                                name: 'test_entrypoint_filename',
+                                defaultValue: 'main.sh',
                                 description: 'Testing entry point file path.',
                                 trim: true
                             ),
@@ -186,7 +192,7 @@ pipeline {
                         deleteDir()
                         git branch: "${product_testing_repo_branch}", url: "${product_testing_repo_url}"
                     }
-                    
+                    sh "chmod +x -R ${env.WORKSPACE}"
                     echo "%^%^%^^%^%^%^^hellooooooooooooooooooo"
                     echo "$values_yaml"
                     echo "====sper===="
@@ -203,7 +209,6 @@ pipeline {
             steps {
                 script {
                     echo "Create cluster stage"
-                    sh "chmod +x -R ${env.WORKSPACE}"
                     
                     withCredentials([[
                         $class: 'AmazonWebServicesCredentialsBinding',
@@ -291,6 +296,9 @@ pipeline {
                         sh '''
                             ./scripts-cluster/delete-cluster.sh
                         '''
+                    }
+                    dir("test-${product_name}/${$test_file_path}") {
+                        sh "./$test_entrypoint_filename"
                     }
                 }
             }
