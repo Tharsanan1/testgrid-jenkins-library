@@ -265,7 +265,7 @@ pipeline {
                         // sh "kubectl wait   --for=condition=ready pod   -l eks.amazonaws.com/fargate-profile=fp-default   --timeout='$service_startup_timeout's"
                     }
                     
-                    env.HOST_NAME=hostName
+                    env.HOST_NAME=hostName.trim()
                        
                     dir("test-${product_name}/${test_file_path}") {
                         sh "./$test_entrypoint_filename"
