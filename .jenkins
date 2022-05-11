@@ -89,7 +89,7 @@ pipeline {
 			"""),           
                             booleanParam(
                                 name: 'deploy_product',
-                                defaultValue: true,
+                                defaultValue: false,
                                 description: 'If selected product will be deployed to the cluster.'
                             ),
                             booleanParam(
