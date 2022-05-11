@@ -163,10 +163,11 @@ pipeline {
                                 description: 'Testing entry point file path.',
                                 trim: true
                             ),
-                            integer(
+                            string(
                                 name: 'service_startup_timeout',
                                 defaultValue: '200',
-                                description: 'Service up timeout in seconds.'
+                                description: 'Service up timeout in seconds.',
+                                trim: true
                             )
                         ])
                     ])
