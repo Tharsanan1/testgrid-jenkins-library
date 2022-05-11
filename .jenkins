@@ -251,13 +251,20 @@ pipeline {
             steps {
                 script {
                     echo "Testing in progress."
-                    withCredentials([[
-                        $class: 'AmazonWebServicesCredentialsBinding',
-                        credentialsId: "aws-creds-tharsanan	",
-                        accessKeyVariable: 'AWS_ACCESS_KEY_ID',
-                        secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
-                    ]]) {
-                        sh "kubectl wait   --for=condition=ready pod   -l eks.amazonaws.com/fargate-profile=fp-default   --timeout='$service_startup_timeout's"
+                    // withCredentials([[
+                    //     $class: 'AmazonWebServicesCredentialsBinding',
+                    //     credentialsId: "aws-creds-tharsanan	",
+                    //     accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+                    //     secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
+                    // ]]) {
+                    //     sh "kubectl wait   --for=condition=ready pod   -l eks.amazonaws.com/fargate-profile=fp-default   --timeout='$service_startup_timeout's"
+                    // }
+                    sh '''
+                            ./scripts-cluster/extract-cluster-details.sh
+                        '''
+                    sh "echo "from jenkins ${HOST_NAME}"
+                    dir("test-${product_name}/${$test_file_path}") {
+                        sh "./$test_entrypoint_filename"
                     }
                 }
             }
@@ -277,6 +284,7 @@ pipeline {
                     ]]) {
                         sh "helm uninstall '$product_name'" 
                     }
+                    
                 }
             }
         }
@@ -297,9 +305,7 @@ pipeline {
                             ./scripts-cluster/delete-cluster.sh
                         '''
                     }
-                    dir("test-${product_name}/${$test_file_path}") {
-                        sh "./$test_entrypoint_filename"
-                    }
+                    
                 }
             }
         }
