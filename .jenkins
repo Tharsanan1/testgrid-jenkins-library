@@ -193,6 +193,7 @@ pipeline {
                         git branch: "${product_testing_repo_branch}", url: "${product_testing_repo_url}"
                     }
                     sh "chmod +x -R ${env.WORKSPACE}"
+                    echo "test file path : $test_file_path"
                     echo "%^%^%^^%^%^%^^hellooooooooooooooooooo"
                     echo "$values_yaml"
                     echo "====sper===="
