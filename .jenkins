@@ -29,12 +29,6 @@ pipeline {
                                 description: 'Product name',
                                 trim: true
                             ),
-                            string(
-                                name: 'product_image',
-                                defaultValue: 'apim:4.1.0',
-                                description: 'Product image name',
-                                trim: true
-                            ),
                             separator(name: "AWS_ENVIRONMENT", sectionHeader: "AWS cloudformation Details",
 			separatorStyle: "border-width: 0",
 			sectionHeaderStyle: """
