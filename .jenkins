@@ -67,6 +67,11 @@ pipeline {
                                 defaultValue: false,
                                 description: 'If selected new kubernetes cluster will be created, based on the cloud formation script provided in the above repository.'
                             ),
+                            booleanParam(
+                                name: 'delete_cluster_at_end',
+                                defaultValue: false,
+                                description: 'If selected kubernetes cluster will be deleted at the end of the testing.'
+                            ),
                             separator(name: "KUBERNETES_ENVIRONMENT", sectionHeader: "Kubernetes Details",
 			separatorStyle: "border-width: 0",
 			sectionHeaderStyle: """
@@ -86,6 +91,11 @@ pipeline {
                                 name: 'deploy_product',
                                 defaultValue: true,
                                 description: 'If selected product will be deployed to the cluster.'
+                            ),
+                            booleanParam(
+                                name: 'uninstall_product',
+                                defaultValue: false,
+                                description: 'If selected product will be uninstalled after the testing.'
                             ),
                             string(
                                 name: 'kubernetes_repo_url',
@@ -142,6 +152,12 @@ pipeline {
                                 trim: true
                             ),
                             string(
+                                name: 'product_testing_repo_branch',
+                                defaultValue: 'https://github.com/Tharsanan1/apim-kubernetes-personal',
+                                description: "Product's testing repository branch name.",
+                                trim: true
+                            ),
+                            string(
                                 name: 'testing_entrypoint_filepath',
                                 defaultValue: 'main',
                                 description: 'Testing entry point file path.',
@@ -151,10 +167,7 @@ pipeline {
                     ])
                     def cnfFolderName = "cnf-${product_name}"
                     def kubernetesFolderName = "kubernetes-${product_name}"
-                    dir("${product_name}") {
-                        deleteDir()
-                        git branch: "${product_repo_branch}", url: "${product_repo_url}"
-                    }
+                    def testingFolderName = "test-${product_name}"
                     dir(cnfFolderName) {
                         deleteDir()
                         git branch: "${cnf_repo_branch}", url: "${cnf_repo_url}"
@@ -162,6 +175,10 @@ pipeline {
                     dir(kubernetesFolderName) {
                         deleteDir()
                         git branch: "${kubernetes_repo_branch}", url: "${kubernetes_repo_url}"
+                    }
+                    dir(testingFolderName) {
+                        deleteDir()
+                        git branch: "${product_testing_repo_branch}", url: "${product_testing_repo_url}"
                     }
                     
                     echo "%^%^%^^%^%^%^^hellooooooooooooooooooo"
@@ -230,6 +247,44 @@ pipeline {
                         secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
                     ]]) {
                         sh "kubectl wait   --for=condition=ready pod   -l eks.amazonaws.com/fargate-profile=fp-default   --timeout=120s"
+                    }
+                }
+            }
+        }
+        stage('Uninstall application') {
+            when {
+                expression {uninstall_product.toBoolean() }
+            }
+            steps {
+                script {
+                    echo "Uninstalling application in progress."
+                    withCredentials([[
+                        $class: 'AmazonWebServicesCredentialsBinding',
+                        credentialsId: "aws-creds-tharsanan	",
+                        accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+                        secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
+                    ]]) {
+                        sh "helm uninstall '$product_name'" 
+                    }
+                }
+            }
+        }
+        stage('Delete cluster') {
+            when {
+                expression {delete_cluster_at_end.toBoolean() }
+            }
+            steps {
+                script {
+                    echo "Deleting cluster in progress."
+                    withCredentials([[
+                        $class: 'AmazonWebServicesCredentialsBinding',
+                        credentialsId: "aws-creds-tharsanan	",
+                        accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+                        secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
+                    ]]) {
+                        sh '''
+                            ./scripts-cluster/delete-cluster.sh
+                        '''
                     }
                 }
             }
