@@ -261,8 +261,8 @@ pipeline {
                     // }
                     sh '''
                             ./scripts-cluster/extract-cluster-details.sh
+                            echo 'from jenkins ${HOST_NAME}'
                         '''
-                    sh "echo "from jenkins ${HOST_NAME}"
                     dir("test-${product_name}/${$test_file_path}") {
                         sh "./$test_entrypoint_filename"
                     }
