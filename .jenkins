@@ -267,7 +267,7 @@ pipeline {
                             
                             echo 'from jenkins ${HOST_NAME}'
                         '''
-                    dir("test-${product_name}/${$test_file_path}") {
+                    dir("test-${product_name}/${test_file_path}") {
                         sh "./$test_entrypoint_filename"
                     }
                 }
