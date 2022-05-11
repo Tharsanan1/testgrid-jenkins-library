@@ -263,6 +263,11 @@ pipeline {
                         '''
                         // sh "kubectl wait   --for=condition=ready pod   -l eks.amazonaws.com/fargate-profile=fp-default   --timeout='$service_startup_timeout's"
                     }
+                    hostName = sh(
+                        returnStdout: true, 
+                        script: './scripts-cluster/extract-cluster-details.sh'
+                    )
+                    env.HOST_NAME=hostName
                     // echo "from jenkins ${HOST_NAME}"
                     sh 'printenv'
                        
