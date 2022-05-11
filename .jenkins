@@ -153,7 +153,7 @@ pipeline {
                             ),
                             string(
                                 name: 'product_testing_repo_branch',
-                                defaultValue: 'https://github.com/Tharsanan1/apim-kubernetes-personal',
+                                defaultValue: 'main',
                                 description: "Product's testing repository branch name.",
                                 trim: true
                             ),
