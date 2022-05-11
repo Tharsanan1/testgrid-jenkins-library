@@ -162,6 +162,11 @@ pipeline {
                                 defaultValue: 'main',
                                 description: 'Testing entry point file path.',
                                 trim: true
+                            ),
+                            integer(
+                                name: 'service_startup_timeout',
+                                defaultValue: '200',
+                                description: 'Service up timeout in seconds.'
                             )
                         ])
                     ])
@@ -246,7 +251,7 @@ pipeline {
                         accessKeyVariable: 'AWS_ACCESS_KEY_ID',
                         secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
                     ]]) {
-                        sh "kubectl wait   --for=condition=ready pod   -l eks.amazonaws.com/fargate-profile=fp-default   --timeout=120s"
+                        sh "kubectl wait   --for=condition=ready pod   -l eks.amazonaws.com/fargate-profile=fp-default   --timeout='$service_startup_timeout's"
                     }
                 }
             }
