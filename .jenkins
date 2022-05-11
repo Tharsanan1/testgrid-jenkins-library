@@ -263,10 +263,9 @@ pipeline {
                         '''
                         // sh "kubectl wait   --for=condition=ready pod   -l eks.amazonaws.com/fargate-profile=fp-default   --timeout='$service_startup_timeout's"
                     }
-                    sh '''
-                            
-                            echo 'from jenkins ${HOST_NAME}'
-                        '''
+                    echo "from jenkins ${HOST_NAME}"
+                    sh 'printenv'
+                       
                     dir("test-${product_name}/${test_file_path}") {
                         sh "./$test_entrypoint_filename"
                     }
