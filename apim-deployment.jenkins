@@ -182,23 +182,25 @@ pipeline {
                         accessKeyVariable: 'AWS_ACCESS_KEY_ID',
                         secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
                     ]]) {
-                        // sh "aws cloudformation create-stack   --stack-name apim-rds-stack   --template-body ./scripts-cluster/apim-rds-cf.yaml --parameters ParameterKey=pDbUser,ParameterValue=root ParameterKey=pDbPass,ParameterValue=${DB_PASSWORD}; aws cloudformation wait stack-create-complete --stack-name apim-rds-stack"
-                        sh '''
-                            aws cloudformation describe-stacks --region us-west-1 --stack-name apim-rds-stack --query 'Stacks[?StackName==`apim-rds-stack`][].Outputs[?OutputKey==`ApimDBJDBCConnectionString`].OutputValue' --output text
-                        '''
+                        sh "eksctl scale nodegroup --cluster apim-profile-automation-eks-cluster-test --name ng-1 --nodes=1"
+                        // sh "aws cloudformation create-stack --region ${APIM_CLUSTER_REGION} --stack-name ${APIM_RDS_STACK_NAME}   --template-body ./scripts-cluster/apim-rds-cf.yaml --parameters ParameterKey=pDbUser,ParameterValue=root ParameterKey=pDbPass,ParameterValue=${DB_PASSWORD}; aws cloudformation wait stack-create-complete --stack-name APIM_RDS_STACK_NAME"
                         dbUrl = sh(
                             returnStdout: true, 
                             script: './scripts-cluster/extract-db-url.sh'
                         )
+                        dbPort = sh(
+                            returnStdout: true, 
+                            script: './scripts-cluster/extract-db-port.sh'
+                        )
                         env.DB_URL=dbUrl.trim();
-                        sh "printenv"
-                        sh "exit 1"
+                        env.DB_PORT=dbPort.trim();
+                        sh "mysql -h ${DB_URL} -P ${DB_PORT} -u root -p${DB_PASSWORD} < ./scripts-cluster/wso2-am-db-cripts.sql"
                         sh "aws s3 cp s3://apim-test-grid/profile-automation/kube-config ~/.kube/config"
                         sh "eksctl get cluster -n ${APIM_EKS_CLUSTER_NAME} || (echo 'Cluster does not exists. Please create the cluster before deploying the applications.'; exit 1)"
                         sh "kubectl wait --namespace ingress-nginx --for=condition=ready pod --selector=app.kubernetes.io/component=controller --timeout=240s"
                         sh "helm repo add wso2 https://helm.wso2.com && helm repo update"
                         sh "helm dependency build 'kubernetes-$product_name'/'$path_to_helm_folder'"
-                        sh "helm install '$product_name' 'kubernetes-$product_name'/'$path_to_helm_folder'"
+                        sh "helm install '$product_name' 'kubernetes-$product_name'/'$path_to_helm_folder' --set wso2.deployment.am.mysql.hostname=${DB_URL} --set wso2.deployment.am.mysql.port=${DB_PORT}"
                     }
                 }
             }
@@ -228,22 +230,21 @@ pipeline {
                 }
             }
         }
-        stage('Uninstall application') {
-            steps {
-                script {
-                    echo "Uninstalling application in progress."
-                    withCredentials([[
+    }
+    post {
+        always {
+            withCredentials([[
                         $class: 'AmazonWebServicesCredentialsBinding',
                         credentialsId: "aws-creds-tharsanan	",
                         accessKeyVariable: 'AWS_ACCESS_KEY_ID',
                         secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
                     ]]) {
+                        sh "eksctl scale nodegroup --cluster apim-profile-automation-eks-cluster-test --name ng-1 --nodes=0"
                         sh "helm uninstall '$product_name'" 
                         sh "aws cloudformation delete-stack --stack-name apim-rds-stack ; aws cloudformation wait stack-delete-complete --stack-name apim-rds-stack"
                     }
-                    
-                }
-            }
+            
+            cleanWs deleteDirs: true, notFailBuild: true
         }
     }
 }

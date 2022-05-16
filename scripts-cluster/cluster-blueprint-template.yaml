@@ -3,7 +3,7 @@ kind: ClusterConfig
 
 metadata:
   name: ${APIM_EKS_CLUSTER_NAME}
-  region: us-west-1
+  region: ${APIM_CLUSTER_REGION}
 
 nodeGroups:
   - name: ng-1

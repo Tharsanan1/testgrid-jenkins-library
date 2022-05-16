@@ -28,5 +28,7 @@ Resources:
 Outputs:
   ApimDBJDBCConnectionString:
     Description: JDBC connection string for the master database
-    Value: !Join ['', ['jdbc:mysql://', !GetAtt [APIMDB, Endpoint.Address], ':',
-        !GetAtt [APIMDB, Endpoint.Port]]]
+    Value: !Join ['', [!GetAtt [APIMDB, Endpoint.Address]]]
+  ApimDBJDBCPort:
+    Description: JDBC port
+    Value: !Join ['', [!GetAtt [APIMDB, Endpoint.Port]]]
