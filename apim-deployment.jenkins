@@ -185,7 +185,7 @@ pipeline {
                         env.DB_PORT=dbPort.trim();
                         sh "mysql -h ${DB_URL} -P ${DB_PORT} -u root -p${DB_PASSWORD} < ./scripts-cluster/wso2-am-db-cripts.sql"
                         sh "aws s3 cp s3://apim-test-grid/profile-automation/kube-config ~/.kube/config"
-                        sh "eksctl get cluster -n ${APIM_EKS_CLUSTER_NAME} || (echo 'Cluster does not exists. Please create the cluster before deploying the applications.'; exit 1)"
+                        sh "eksctl get cluster --region ${APIM_CLUSTER_REGION} -n ${APIM_EKS_CLUSTER_NAME} || (echo 'Cluster does not exists. Please create the cluster before deploying the applications.'; exit 1)"
                         sh "kubectl wait --namespace ingress-nginx --for=condition=ready pod --selector=app.kubernetes.io/component=controller --timeout=240s"
                         sh "helm repo add wso2 https://helm.wso2.com && helm repo update"
                         sh "helm dependency build 'kubernetes-$product_name'/'$path_to_helm_folder'"
