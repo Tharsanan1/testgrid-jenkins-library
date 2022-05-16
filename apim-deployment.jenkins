@@ -184,7 +184,7 @@ pipeline {
                     ]]) {
                         // sh "aws cloudformation create-stack   --stack-name apim-rds-stack   --template-body ./scripts-cluster/apim-rds-cf.yaml --parameters ParameterKey=pDbUser,ParameterValue=root ParameterKey=pDbPass,ParameterValue=${DB_PASSWORD}; aws cloudformation wait stack-create-complete --stack-name apim-rds-stack"
                         sh '''
-                            aws cloudformation describe-stacks --stack-name apim-rds-stack --query 'Stacks[?StackName==`apim-rds-stack`][].Outputs[?OutputKey==`ApimDBJDBCConnectionString`].OutputValue' --output text
+                            aws cloudformation describe-stacks --region us-west-1 --stack-name apim-rds-stack --query 'Stacks[?StackName==`apim-rds-stack`][].Outputs[?OutputKey==`ApimDBJDBCConnectionString`].OutputValue' --output text
                         '''
                         dbUrl = sh(
                             returnStdout: true, 
