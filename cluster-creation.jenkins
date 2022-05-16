@@ -5,10 +5,8 @@ pipeline {
             steps {
                 script {
                     // deleteDir()
-
                     properties([
                         parameters([
-                            
                             booleanParam(
                                 name: 'create_new_cluster',
                                 defaultValue: false,
@@ -22,9 +20,9 @@ pipeline {
                         ])
                     ])
                 }
+                sh "chmod +x -R ${env.WORKSPACE}"
+                sh "cat ./scripts-cluster/cluster-blueprint-template.yaml | envsubst '${APIM_EKS_CLUSTER_NAME}' | envsubst '${APIM_CLUSTER_REGION}' > ./scripts-cluster/cluster-blueprint.yaml"
             }
-            sh "chmod +x -R ${env.WORKSPACE}"
-            sh "cat ./scripts-cluster/cluster-blueprint-template.yaml | envsubst '${APIM_EKS_CLUSTER_NAME}' | envsubst '${APIM_CLUSTER_REGION}' > ./scripts-cluster/cluster-blueprint.yaml"
         }
         stage('Create cluster') {
             when {
