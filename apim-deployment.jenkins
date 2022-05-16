@@ -228,7 +228,7 @@ pipeline {
                         accessKeyVariable: 'AWS_ACCESS_KEY_ID',
                         secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
                     ]]) {
-                        sh "eksctl scale nodegroup --region ${APIM_CLUSTER_REGION} --cluster apim-profile-automation-eks-cluster-test --name ng-1 --nodes=0"
+                        sh "eksctl scale nodegroup --region ${APIM_CLUSTER_REGION} --cluster ${APIM_EKS_CLUSTER_NAME} --name ng-1 --nodes=0"
                         sh "helm uninstall '$product_name'" 
                         sh "aws cloudformation delete-stack --stack-name apim-rds-stack ; aws cloudformation wait stack-delete-complete --stack-name apim-rds-stack"
                     }
