@@ -19,6 +19,8 @@ pipeline {
                                 defaultValue: false,
                                 description: 'If selected kubernetes cluster will be deleted at the end of the testing.'
                             )
+                        ])
+                    ])
                 }
             }
         }
