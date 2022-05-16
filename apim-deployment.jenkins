@@ -182,8 +182,17 @@ pipeline {
                         accessKeyVariable: 'AWS_ACCESS_KEY_ID',
                         secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
                     ]]) {
+                        // sh "aws cloudformation create-stack   --stack-name apim-rds-stack   --template-body ./scripts-cluster/apim-rds-cf.yaml --parameters ParameterKey=pDbUser,ParameterValue=root ParameterKey=pDbPass,ParameterValue=${DB_PASSWORD}; aws cloudformation wait stack-create-complete --stack-name apim-rds-stack"
+                        dbUrl = sh(
+                            returnStdout: true, 
+                            script: './scripts-cluster/extract-db-url.sh'
+                        )
+                        env.DB_URL=dbUrl.trim();
+                        sh "printenv"
+                        sh "exit 1"
+                        sh "aws s3 cp s3://apim-test-grid/profile-automation/kube-config ~/.kube/config"
                         sh "eksctl get cluster -n ${APIM_EKS_CLUSTER_NAME} || (echo 'Cluster does not exists. Please create the cluster before deploying the applications.'; exit 1)"
-                        sh "kubectl wait --namespace ingress-nginx --for=condition=ready pod --selector=app.kubernetes.io/component=controller --timeout=120s"
+                        sh "kubectl wait --namespace ingress-nginx --for=condition=ready pod --selector=app.kubernetes.io/component=controller --timeout=240s"
                         sh "helm repo add wso2 https://helm.wso2.com && helm repo update"
                         sh "helm dependency build 'kubernetes-$product_name'/'$path_to_helm_folder'"
                         sh "helm install '$product_name' 'kubernetes-$product_name'/'$path_to_helm_folder'"
@@ -202,10 +211,10 @@ pipeline {
                         secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
                     ]]) {
                         hostName = sh(
-                        returnStdout: true, 
-                        script: './scripts-cluster/extract-cluster-details.sh'
-                    )
-                        sh "kubectl wait   --for=condition=ready pod   -l eks.amazonaws.com/fargate-profile=fp-default   --timeout='$service_startup_timeout's"
+                            returnStdout: true, 
+                            script: './scripts-cluster/extract-cluster-details.sh'
+                        )
+                        sh "kubectl wait --for=condition=ready pod   -l eks.amazonaws.com/fargate-profile=fp-default   --timeout='$service_startup_timeout's"
                     }
                     
                     env.HOST_NAME=hostName.trim()
@@ -227,6 +236,7 @@ pipeline {
                         secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
                     ]]) {
                         sh "helm uninstall '$product_name'" 
+                        sh "aws cloudformation delete-stack --stack-name apim-rds-stack ; aws cloudformation wait stack-delete-complete --stack-name apim-rds-stack"
                     }
                     
                 }

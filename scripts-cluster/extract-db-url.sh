@@ -1,0 +1,1 @@
+aws cloudformation describe-stacks --stack-name apim-rds-stack --query 'Stacks[?StackName==`apim-rds-stack`][].Outputs[?OutputKey==`ApimDBJDBCConnectionString`].OutputValue' --output text
