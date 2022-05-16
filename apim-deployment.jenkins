@@ -95,10 +95,6 @@ pipeline {
                                 description: 'namespace to be deployed.',
                                 trim: true
                             ),
-                            text(
-                                description: 'Place your values.yaml file content here.',
-                                name: 'values_yaml'
-                            ),
                             separator(name: "TESTING ENVIRONMENT", sectionHeader: "Testing Details",
 			separatorStyle: "border-width: 0",
 			sectionHeaderStyle: """
@@ -162,13 +158,6 @@ pipeline {
                         git branch: "${product_testing_repo_branch}", url: "${product_testing_repo_url}"
                     }
                     sh "chmod +x -R ${env.WORKSPACE}"
-                    echo "test file path : $test_file_path"
-                    echo "%^%^%^^%^%^%^^hellooooooooooooooooooo"
-                    echo "$values_yaml"
-                    echo "====sper===="
-                    echo "$kubernetesFolderName/${path_to_helm_folder}/values.yaml"
-                    writeFile(file: "$kubernetesFolderName/${path_to_helm_folder}/values.yaml", text: "$values_yaml")
-                    // echo "$values_yaml" > "$kubernetesFolderName/${path_to_helm_folder}/values.yaml"
                 }
             }
         }
