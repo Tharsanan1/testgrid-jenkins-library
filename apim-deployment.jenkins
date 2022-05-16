@@ -172,7 +172,7 @@ pipeline {
                         secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
                     ]]) {
                         sh "eksctl scale nodegroup --region ${APIM_CLUSTER_REGION} --cluster ${APIM_EKS_CLUSTER_NAME} --name ng-1 --nodes=1"
-                        sh "aws cloudformation create-stack --region ${APIM_CLUSTER_REGION} --stack-name ${APIM_RDS_STACK_NAME}   --template-body file://./scripts-cluster/apim-rds-cf.yaml --parameters ParameterKey=pDbUser,ParameterValue=root ParameterKey=pDbPass,ParameterValue=${DB_PASSWORD}; aws cloudformation wait stack-create-complete --stack-name APIM_RDS_STACK_NAME"
+                        sh "aws cloudformation create-stack --region ${APIM_CLUSTER_REGION} --stack-name ${APIM_RDS_STACK_NAME}   --template-body file://./scripts-cluster/apim-rds-cf.yaml --parameters ParameterKey=pDbUser,ParameterValue=root ParameterKey=pDbPass,ParameterValue=${DB_PASSWORD}; aws cloudformation wait stack-create-complete --region ${APIM_CLUSTER_REGION} --stack-name APIM_RDS_STACK_NAME"
                         dbUrl = sh(
                             returnStdout: true, 
                             script: './scripts-cluster/extract-db-url.sh'
@@ -230,7 +230,7 @@ pipeline {
                     ]]) {
                         sh "eksctl scale nodegroup --region ${APIM_CLUSTER_REGION} --cluster ${APIM_EKS_CLUSTER_NAME} --name ng-1 --nodes=0"
                         sh "helm uninstall '$product_name'" 
-                        sh "aws cloudformation delete-stack --stack-name apim-rds-stack ; aws cloudformation wait stack-delete-complete --stack-name apim-rds-stack"
+                        sh "aws cloudformation delete-stack --stack-name apim-rds-stack ; aws cloudformation wait stack-delete-complete --region ${APIM_CLUSTER_REGION} --stack-name apim-rds-stack"
                     }
             
             cleanWs deleteDirs: true, notFailBuild: true
