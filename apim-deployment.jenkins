@@ -136,7 +136,7 @@ pipeline {
                             ),
                             string(
                                 name: 'service_startup_timeout',
-                                defaultValue: '200',
+                                defaultValue: '600',
                                 description: 'Service up timeout in seconds.',
                                 trim: true
                             )
