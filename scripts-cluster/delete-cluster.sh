@@ -1,1 +1,1 @@
-eksctl delete cluster -f ./scripts-cluster/cluster-blueprint.yaml
+eksctl delete cluster -f ./scripts-cluster/cluster-blueprint.yaml --wait

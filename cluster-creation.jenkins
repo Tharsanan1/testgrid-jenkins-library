@@ -23,6 +23,8 @@ pipeline {
                     ])
                 }
             }
+            sh "chmod +x -R ${env.WORKSPACE}"
+            sh "cat ./scripts-cluster/cluster-blueprint-template.yaml | envsubst '${APIM_EKS_CLUSTER_NAME}' > ./scripts-cluster/cluster-blueprint.yaml"
         }
         stage('Create cluster') {
             when {
