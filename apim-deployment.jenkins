@@ -172,7 +172,7 @@ pipeline {
                         secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
                     ]]) {
                         sh "eksctl scale nodegroup --region ${APIM_CLUSTER_REGION} --cluster ${APIM_EKS_CLUSTER_NAME} --name ng-1 --nodes=1"
-                        sh "aws cloudformation create-stack --region ${APIM_CLUSTER_REGION} --stack-name ${APIM_RDS_STACK_NAME}   --template-body file://./scripts-cluster/apim-rds-cf.yaml --parameters ParameterKey=pDbUser,ParameterValue=root ParameterKey=pDbPass,ParameterValue=${DB_PASSWORD}; aws cloudformation wait stack-create-complete --region ${APIM_CLUSTER_REGION} --stack-name ${APIM_RDS_STACK_NAME}"
+                        sh "aws cloudformation create-stack --region ${APIM_CLUSTER_REGION} --stack-name ${APIM_RDS_STACK_NAME}   --template-body file://./scripts-cluster/apim-rds-cf.yaml --parameters ParameterKey=pDbUser,ParameterValue=root ParameterKey=pDbPass,ParameterValue=${DB_PASSWORD}; aws cloudformation wait stack-create-complete --region ${APIM_CLUSTER_REGION} --stack-name ${APIM_RDS_STACK_NAME} "
                         dbUrl = sh(
                             returnStdout: true, 
                             script: './scripts-cluster/extract-db-url.sh'
@@ -189,7 +189,9 @@ pipeline {
                         sh "kubectl wait --namespace ingress-nginx --for=condition=ready pod --selector=app.kubernetes.io/component=controller --timeout=240s"
                         sh "helm repo add wso2 https://helm.wso2.com && helm repo update"
                         sh "helm dependency build 'kubernetes-$product_name'/'$path_to_helm_folder'"
-                        sh "helm install '$product_name' 'kubernetes-$product_name'/'$path_to_helm_folder' --set wso2.deployment.am.mysql.hostname=${DB_URL} --set wso2.deployment.am.mysql.port=${DB_PORT}"
+                        withCredentials([usernamePassword(credentialsId: 'tharsanan-email-username-password', passwordVariable: 'password', usernameVariable: 'username')]) {
+                            sh "helm install '$product_name' 'kubernetes-$product_name'/'$path_to_helm_folder' --set wso2.deployment.am.mysql.hostname=${DB_URL} --set wso2.deployment.am.mysql.port=${DB_PORT} --set wso2.subscription.username=$username --set wso2.subscription.password=$password"
+                        }
                     }
                 }
             }
