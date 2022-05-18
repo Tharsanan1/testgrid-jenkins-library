@@ -142,11 +142,10 @@ pipeline {
                             )
                         ])
                     ])
-                    def cnfFolderName = "cnf-${product_name}"
-                    def kubernetesFolderName = "kubernetes-${product_name}"
-                    def testingFolderName = "test-${product_name}"
+                    def cnfFolderName = "scripts-cluster/${product_name}/cnf-${product_name}"
+                    def kubernetesFolderName = "scripts-cluster/${product_name}/kubernetes-${product_name}"
+                    def testingFolderName = "scripts-cluster/${product_name}/test-${product_name}"
                     dir(cnfFolderName) {
-                        deleteDir()
                         git branch: "${cnf_repo_branch}", url: "${cnf_repo_url}"
                     }
                     dir(kubernetesFolderName) {
@@ -171,27 +170,7 @@ pipeline {
                         accessKeyVariable: 'AWS_ACCESS_KEY_ID',
                         secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
                     ]]) {
-                        sh "eksctl scale nodegroup --region ${APIM_CLUSTER_REGION} --cluster ${APIM_EKS_CLUSTER_NAME} --name ng-1 --nodes=1"
-                        sh "aws cloudformation create-stack --region ${APIM_CLUSTER_REGION} --stack-name ${APIM_RDS_STACK_NAME}   --template-body file://./scripts-cluster/apim-rds-cf.yaml --parameters ParameterKey=pDbUser,ParameterValue=root ParameterKey=pDbPass,ParameterValue=${DB_PASSWORD}; aws cloudformation wait stack-create-complete --region ${APIM_CLUSTER_REGION} --stack-name ${APIM_RDS_STACK_NAME} "
-                        dbUrl = sh(
-                            returnStdout: true, 
-                            script: './scripts-cluster/extract-db-url.sh'
-                        )
-                        dbPort = sh(
-                            returnStdout: true, 
-                            script: './scripts-cluster/extract-db-port.sh'
-                        )
-                        env.DB_URL=dbUrl.trim();
-                        env.DB_PORT=dbPort.trim();
-                        sh "mysql -h ${DB_URL} -P ${DB_PORT} -u root -p${DB_PASSWORD} < ./scripts-cluster/wso2-am-db-cripts.sql"
-                        sh "aws s3 cp s3://apim-test-grid/profile-automation/kube-config ~/.kube/config"
-                        sh "eksctl get cluster --region ${APIM_CLUSTER_REGION} -n ${APIM_EKS_CLUSTER_NAME} || (echo 'Cluster does not exists. Please create the cluster before deploying the applications.'; exit 1)"
-                        sh "kubectl wait --namespace ingress-nginx --for=condition=ready pod --selector=app.kubernetes.io/component=controller --timeout=240s"
-                        sh "helm repo add wso2 https://helm.wso2.com && helm repo update"
-                        sh "helm dependency build 'kubernetes-$product_name'/'$path_to_helm_folder'"
-                        withCredentials([usernamePassword(credentialsId: 'tharsanan-email-username-password', passwordVariable: 'password', usernameVariable: 'username')]) {
-                            sh "helm install '$product_name' 'kubernetes-$product_name'/'$path_to_helm_folder' --set wso2.deployment.am.mysql.hostname=${DB_URL} --set wso2.deployment.am.mysql.port=${DB_PORT} --set wso2.subscription.username=$username --set wso2.subscription.password=$password"
-                        }
+                        sh "./scripts-cluster/deploy.sh ${product_name}"
                     }
                 }
             }
@@ -232,7 +211,7 @@ pipeline {
                     ]]) {
                         sh "eksctl scale nodegroup --region ${APIM_CLUSTER_REGION} --cluster ${APIM_EKS_CLUSTER_NAME} --name ng-1 --nodes=0 || true"
                         sh "helm uninstall '$product_name' || true" 
-                        sh "(aws cloudformation delete-stack --region ${APIM_CLUSTER_REGION} --stack-name apim-rds-stack ; aws cloudformation wait stack-delete-complete --region ${APIM_CLUSTER_REGION} --stack-name apim-rds-stack) || true"
+                        sh "(aws cloudformation delete-stack --region ${APIM_CLUSTER_REGION} --stack-name ${APIM_RDS_STACK_NAME} ; aws cloudformation wait stack-delete-complete --region ${APIM_CLUSTER_REGION} --stack-name apim-rds-stack) || true"
                     }
             
             cleanWs deleteDirs: true, notFailBuild: true
