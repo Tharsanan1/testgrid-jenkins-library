@@ -124,7 +124,7 @@ pipeline {
                             ),
                             string(
                                 name: 'test_file_path',
-                                defaultValue: './',
+                                defaultValue: './main.sh',
                                 description: 'Test execution relative file path',
                                 trim: true
                             ),
