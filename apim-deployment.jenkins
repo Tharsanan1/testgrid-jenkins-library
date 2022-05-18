@@ -136,6 +136,10 @@ pipeline {
                             )
                         ])
                     ])
+                    def lst = ["apim"];
+                    if (!lst.contains("${product_name}")) {
+                        error("Product ${product_name} not supported");
+                    } 
                     def cnfFolderName = "scripts-cluster/${product_name}/cnf-${product_name}"
                     def kubernetesFolderName = "scripts-cluster/${product_name}/kubernetes-${product_name}"
                     def testingFolderName = "scripts-cluster/${product_name}/test-${product_name}"
