@@ -17,8 +17,8 @@ eksctl get cluster --region ${APIM_CLUSTER_REGION} -n ${APIM_EKS_CLUSTER_NAME} |
 kubectl wait --namespace ingress-nginx --for=condition=ready pod --selector=app.kubernetes.io/component=controller --timeout=240s
 
 helm repo add wso2 https://helm.wso2.com && helm repo update
-helm dependency build 'kubernetes-apim'/'$path_to_helm_folder'
-helm install apim 'kubernetes-apim'/'$path_to_helm_folder' --set wso2.deployment.am.mysql.hostname="$dbHost" --set wso2.deployment.am.mysql.port="$dbPort" 
+helm dependency build "kubernetes-apim/${path_to_helm_folder}"
+helm install apim "kubernetes-apim/${path_to_helm_folder}" --set wso2.deployment.am.mysql.hostname="$dbHost" --set wso2.deployment.am.mysql.port="$dbPort" 
 
 
 cd "$workingdir"
