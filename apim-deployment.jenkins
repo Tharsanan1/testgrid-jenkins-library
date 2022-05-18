@@ -137,7 +137,7 @@ pipeline {
                         ])
                     ])
                     def lst = ["apim"];
-                    if (!lst.contains("${product_name}")) {
+                    if (!lst.contains(product_name)) {
                         error("Product ${product_name} not supported");
                     } 
                     def cnfFolderName = "scripts-cluster/${product_name}/cnf-${product_name}"
