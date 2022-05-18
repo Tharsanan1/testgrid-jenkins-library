@@ -2,6 +2,7 @@ workingdir=$(pwd)
 reldir=`dirname $0`
 cd $reldir
 
+eksctl get cluster --region ${APIM_CLUSTER_REGION} -n ${APIM_EKS_CLUSTER_NAME} || (echo 'Cluster does not exists. Please create the cluster before deploying the applications.'; exit 1)
 eksctl scale nodegroup --region ${APIM_CLUSTER_REGION} --cluster ${APIM_EKS_CLUSTER_NAME} --name ng-1 --nodes=1
 dbPassword=$(echo $RANDOM | md5sum | head -c 8)
 echo "DB password : $dbPassword"
@@ -13,7 +14,6 @@ mysql -h "$dbHost" -P "$dbPort" -u root -p"$dbPassword" < wso2-am-db-cripts.sql
 
 aws s3 cp s3://apim-test-grid/profile-automation/kube-config ~/.kube/config
 
-eksctl get cluster --region ${APIM_CLUSTER_REGION} -n ${APIM_EKS_CLUSTER_NAME} || (echo 'Cluster does not exists. Please create the cluster before deploying the applications.'; exit 1)
 kubectl wait --namespace ingress-nginx --for=condition=ready pod --selector=app.kubernetes.io/component=controller --timeout=240s
 
 helm repo add wso2 https://helm.wso2.com && helm repo update
