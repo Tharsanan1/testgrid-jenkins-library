@@ -9,7 +9,7 @@ pipeline {
                         parameters([
                             booleanParam(
                                 name: 'create_new_cluster',
-                                defaultValue: false,
+                                defaultValue: true,
                                 description: 'If selected new kubernetes cluster will be created, based on the cloud formation script provided in the above repository.'
                             ),
                             booleanParam(
