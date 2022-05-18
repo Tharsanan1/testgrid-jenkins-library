@@ -1,5 +1,5 @@
 pipeline {
-    agent any 
+    agent {label 'pipeline-kubernetes-agent'}
     stages {
         stage('Clone repo') {
             steps {
