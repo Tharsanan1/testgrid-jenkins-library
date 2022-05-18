@@ -1,4 +1,7 @@
 # Testgrid Jenkins Library
+export APIM_EKS_CLUSTER_NAME=apim-profile-automation-eks-cluster
+export APIM_RDS_STACK_NAME=apim-rds-stack
+export APIM_CLUSTER_REGION=us-west-1
 
 This repo contains the related pipeline code that is being used in the Jenkins TestGrid Pipeline.
 
