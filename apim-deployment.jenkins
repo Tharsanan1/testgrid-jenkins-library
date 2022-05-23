@@ -160,6 +160,8 @@ pipeline {
                         deleteDir()
                         git branch: "${product_testing_repo_branch}", url: "${product_testing_repo_url}"
                     }
+                    echo "workspace path : ${env.WORKSPACE} pwd: "
+                    sh "pwd"
                     sh "chmod +x -R ${env.WORKSPACE}"
                 }
             }
