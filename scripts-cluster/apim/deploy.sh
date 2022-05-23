@@ -61,7 +61,7 @@ kubectl wait --namespace ingress-nginx --for=condition=ready pod --selector=app.
 
 helm repo add wso2 https://helm.wso2.com && helm repo update ||  { echo 'Error while adding WSO2 helm repository to helm.';  exit 1; }
 helm dependency build "kubernetes-apim/${path_to_helm_folder}" ||  { echo 'Error while building helm folder : kubernetes-apim/${path_to_helm_folder}.';  exit 1; }
-helm install apim "kubernetes-apim/${path_to_helm_folder}" --set wso2.deployment.am.mysql.hostname="$dbHost" --set wso2.deployment.am.mysql.port="$dbPort" 
+helm install apim "kubernetes-apim/${path_to_helm_folder}" --set wso2.deployment.am.mysql.hostname="$dbHost" --set wso2.deployment.am.mysql.port="$dbPort" ||  { echo 'Error while instaling APIM to cluster.';  exit 1; }
 
 
 cd "$workingdir"
