@@ -1,4 +1,5 @@
 pipeline {
+    // agent {label 'pipeline-kubernetes-agent'}
     agent any 
     environment {
         APIM_CLUSTER_REGION = 'us-west-1'   
