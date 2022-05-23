@@ -167,7 +167,9 @@ pipeline {
         stage('Deploy into cluster') {
             steps {
                 script {
-                    echo "Deploy into cluster stage $WORKSPACE $kubernetes_namespace"
+                    echo "\n\n\n\n=============================================="
+                    echo "Deploy ${product_name} into cluster"
+                    echo "==============================================\n\n\n\n"
                     withCredentials([[
                         $class: 'AmazonWebServicesCredentialsBinding',
                         credentialsId: "aws-creds-tharsanan	",
@@ -182,7 +184,9 @@ pipeline {
         stage('Testing') {
             steps {
                 script {
-                    echo "Testing in progress."
+                    echo "\n\n\n\n=============================================="
+                    echo "Testing ${product_name} into cluster"
+                    echo "==============================================\n\n\n\n"
                     withCredentials([[
                         $class: 'AmazonWebServicesCredentialsBinding',
                         credentialsId: "aws-creds-tharsanan	",
@@ -211,6 +215,9 @@ pipeline {
                         accessKeyVariable: 'AWS_ACCESS_KEY_ID',
                         secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
                     ]]) {
+                        echo "\n\n\n\n=============================================="
+                        echo "Uninstall ${product_name} in cluster"
+                        echo "==============================================\n\n\n\n"
                         sh "sh ./scripts-cluster/cleanup.sh ${product_name}"
                     }
             
