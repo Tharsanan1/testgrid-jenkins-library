@@ -1,5 +1,10 @@
 pipeline {
     agent any 
+    environment {
+        APIM_CLUSTER_REGION = 'us-west-1'   
+        APIM_EKS_CLUSTER_NAME = 'apim-profile-automation-eks-cluster'
+        APIM_RDS_STACK_NAME = 'apim-rds-stack'                           
+    }
     stages {
         stage('Clone repo') {
             steps {
