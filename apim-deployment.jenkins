@@ -163,7 +163,7 @@ pipeline {
                     echo "workspace path : ${env.WORKSPACE} pwd: "
                     sh "pwd"
                     sh "chmod +x -R ${env.WORKSPACE}"
-                    sh "scripts-cluster/"
+                    sh "ls scripts-cluster/"
                     sh "ls scripts-cluster/${product_name}"
                 }
             }
