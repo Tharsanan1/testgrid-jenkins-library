@@ -52,7 +52,7 @@ pipeline {
 			"""),
                             string(
                                 name: 'cnf_repo_url',
-                                defaultValue: 'https://github.com/Tharsanan1/testgrid-jenkins-library',
+                                defaultValue: 'https://github.com/Tharsanan1/APIMCloudFormation',
                                 description: 'Cloud formation repository url.',
                                 trim: true
                             ),
