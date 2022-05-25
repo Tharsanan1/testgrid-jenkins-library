@@ -146,7 +146,7 @@ pipeline {
                     if (!lst.contains(product_name)) {
                         error("Product ${product_name} not supported");
                     } 
-                    def cnfFolderName = "scripts-cluster/${product_name}/cnf-${product_name}"
+                    def cnfFolderName = "scripts-cluster/${product_name}"
                     def kubernetesFolderName = "scripts-cluster/${product_name}/kubernetes-${product_name}"
                     def testingFolderName = "scripts-cluster/${product_name}/test-${product_name}"
                     dir(cnfFolderName) {
@@ -160,6 +160,8 @@ pipeline {
                         deleteDir()
                         git branch: "${product_testing_repo_branch}", url: "${product_testing_repo_url}"
                     }
+                    echo "workspace path : ${env.WORKSPACE} pwd: "
+                    sh "pwd"
                     sh "chmod +x -R ${env.WORKSPACE}"
                 }
             }
