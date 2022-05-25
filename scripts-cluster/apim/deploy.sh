@@ -31,7 +31,7 @@ reldir=`dirname $0`
 cd $reldir
 
 eksctl get cluster --region ${APIM_CLUSTER_REGION} -n ${APIM_EKS_CLUSTER_NAME} || { echo 'Cluster does not exists. Please create the cluster before deploying the applications.';  exit 1; }
-kubectl delete -A ValidatingWebhookConfiguration ingress-nginx-admission || echo "Failed to delete nginx admission."
+kubectl delete -A ValidatingWebhookConfiguration ingress-nginx-admission || echo "WARNING : Failed to delete nginx admission."
 eksctl scale nodegroup --region ${APIM_CLUSTER_REGION} --cluster ${APIM_EKS_CLUSTER_NAME} --name ng-1 --nodes=1 || { echo 'Failed to scale the node group.';  exit 1; }
 dbPassword=$(echo $RANDOM | md5sum | head -c 8)
 echo "DB password : $dbPassword"
