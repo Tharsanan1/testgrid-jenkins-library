@@ -35,6 +35,12 @@ pipeline {
                                 description: 'Product name',
                                 trim: true
                             ),
+                            string(
+                                name: 'product_version',
+                                defaultValue: '4.1.0',
+                                description: 'Product version',
+                                trim: true
+                            ),
                             separator(name: "AWS_ENVIRONMENT", sectionHeader: "AWS cloudformation Details",
 			separatorStyle: "border-width: 0",
 			sectionHeaderStyle: """
@@ -60,6 +66,12 @@ pipeline {
                                 name: 'cnf_repo_branch',
                                 defaultValue: 'main',
                                 description: 'Branch name of the cloud formation repo.',
+                                trim: true
+                            ),
+                            string(
+                                name: 'db_engine',
+                                defaultValue: 'mysql',
+                                description: 'Database engine',
                                 trim: true
                             ),
                             separator(name: "KUBERNETES_ENVIRONMENT", sectionHeader: "Kubernetes Details",
