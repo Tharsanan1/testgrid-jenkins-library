@@ -80,6 +80,12 @@ pipeline {
                                 description: 'Database engine version',
                                 trim: true
                             ),
+                            string(
+                                name: 'db_instance_class',
+                                defaultValue: 'db.t3.small',
+                                description: 'Database engine instance class',
+                                trim: true
+                            ),
                             separator(name: "KUBERNETES_ENVIRONMENT", sectionHeader: "Kubernetes Details",
                                 separatorStyle: "border-width: 0",
                                 sectionHeaderStyle: """
