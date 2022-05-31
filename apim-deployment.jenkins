@@ -74,6 +74,12 @@ pipeline {
                                 description: 'Database engine',
                                 trim: true
                             ),
+                            string(
+                                name: 'db_version',
+                                defaultValue: '8.0.28',
+                                description: 'Database engine version',
+                                trim: true
+                            ),
                             separator(name: "KUBERNETES_ENVIRONMENT", sectionHeader: "Kubernetes Details",
                                 separatorStyle: "border-width: 0",
                                 sectionHeaderStyle: """
