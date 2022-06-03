@@ -5,8 +5,8 @@ pipeline {
         EKS_CLUSTER_REGION = 'us-west-1'   
         EKS_CLUSTER_NAME = 'apim-profile-automation-eks-cluster'
         RDS_STACK_NAME = 'apim-rds-stack'  
-        RDS_USERNAME = 'root'
-        RDS_PASSWORD = '613296496' 
+        DB_USERNAME = 'root'
+        DB_PASSWORD = '613296496' 
     }
     stages {
         stage('Clone repo') {
