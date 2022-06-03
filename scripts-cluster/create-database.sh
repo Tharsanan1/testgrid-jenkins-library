@@ -1,3 +1,7 @@
+workingdir=$(pwd)
+reldir=`dirname $0`
+cd $reldir
+
 dbEngine=""
 if [ "${db_engine}" = "postgres" ];
     then 
@@ -20,3 +24,5 @@ aws cloudformation create-stack --region ${EKS_CLUSTER_REGION} --stack-name ${RD
 
 # Wait for RDS DB to come alive.
 aws cloudformation wait stack-create-complete --region ${EKS_CLUSTER_REGION} --stack-name ${RDS_STACK_NAME} || { echo 'RDS stack creation timeout.';  exit 1; }
+
+cd "$workingdir"

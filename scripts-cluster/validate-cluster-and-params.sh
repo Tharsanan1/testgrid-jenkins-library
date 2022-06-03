@@ -49,10 +49,12 @@ if [ $flag = 1 ];
     then echo "DB engine value is empty."; exit 1
 fi;
 
-cd "$workingdir"
 
 # Update kube config file.
 aws eks update-kubeconfig --region ${EKS_CLUSTER_REGION} --name ${EKS_CLUSTER_NAME} || { echo 'Failed to update cluster kube config.';  exit 1; }
 
 # Check whether a cluster exists.
 eksctl get cluster --region ${EKS_CLUSTER_REGION} -n ${EKS_CLUSTER_NAME} || { echo 'Cluster does not exists. Please create the cluster before deploying the applications.';  exit 1; }
+
+
+cd "$workingdir"
