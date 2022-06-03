@@ -2,9 +2,11 @@ pipeline {
     // agent {label 'pipeline-kubernetes-agent'}
     agent any 
     environment {
-        APIM_CLUSTER_REGION = 'us-west-1'   
-        APIM_EKS_CLUSTER_NAME = 'apim-profile-automation-eks-cluster'
-        APIM_RDS_STACK_NAME = 'apim-rds-stack'                           
+        EKS_CLUSTER_REGION = 'us-west-1'   
+        EKS_CLUSTER_NAME = 'apim-profile-automation-eks-cluster'
+        RDS_STACK_NAME = 'apim-rds-stack'  
+        RDS_USERNAME = 'root'
+        RDS_PASSWORD = '613296496' 
     }
     stages {
         stage('Clone repo') {
@@ -189,6 +191,40 @@ pipeline {
                     sh "chmod +x -R ${env.WORKSPACE}"
                     sh "ls scripts-cluster/"
                     sh "ls scripts-cluster/${product_name}"
+                }
+            }
+        }
+        stage('Validate cluster') {
+            steps {
+                script {
+                    echo "\n\n\n\n=============================================="
+                    echo "Validate."
+                    echo "==============================================\n\n\n\n"
+                    withCredentials([[
+                        $class: 'AmazonWebServicesCredentialsBinding',
+                        credentialsId: "aws-creds-tharsanan	",
+                        accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+                        secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
+                    ]]) {
+                        sh "./scripts-cluster/validate-cluster-and-params.sh"
+                    }
+                }
+            }
+        }
+        stage('Create Database') {
+            steps {
+                script {
+                    echo "\n\n\n\n=============================================="
+                    echo "Create RDS database."
+                    echo "==============================================\n\n\n\n"
+                    withCredentials([[
+                        $class: 'AmazonWebServicesCredentialsBinding',
+                        credentialsId: "aws-creds-tharsanan	",
+                        accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+                        secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
+                    ]]) {
+                        sh "./scripts-cluster/create-database.sh"
+                    }
                 }
             }
         }
