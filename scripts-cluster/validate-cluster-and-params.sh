@@ -1,8 +1,17 @@
+isEmpty () {
+    if [ ${#1} -ge 1 ];
+        then 
+            return 0;
+    else
+        return 1;
+    fi;
+}
+
+
 workingdir=$(pwd)
 reldir=`dirname $0`
 cd $reldir
 
-source ./utils.sh
 
 isEmpty "${EKS_CLUSTER_NAME}";
 flag=$?
