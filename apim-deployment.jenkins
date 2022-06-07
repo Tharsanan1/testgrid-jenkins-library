@@ -281,6 +281,7 @@ pipeline {
                         echo "Uninstall ${product_name} in cluster"
                         echo "==============================================\n\n\n\n"
                         sh "sh ./scripts-cluster/cleanup.sh ${product_name}"
+                        
                     }
             
             cleanWs deleteDirs: true, notFailBuild: true
