@@ -1,3 +1,4 @@
 #!/bin/bash
 productName=$1;
-sh ./scripts-cluster/"$productName"/test.sh
+relativeFilePathTestFile=$2
+sh ./scripts-cluster/"$productName"/"$relativeFilePathTestFile"

@@ -2,9 +2,9 @@ pipeline {
     agent {label 'pipeline-kubernetes-agent'}
     // agent any 
     environment {
-        EKS_CLUSTER_REGION = 'us-west-1'   
-        EKS_CLUSTER_NAME = 'apim-profile-automation-eks-cluster'
-        RDS_STACK_NAME = 'apim-rds-stack'  
+        EKS_CLUSTER_REGION = 'us-east-1'   
+        EKS_CLUSTER_NAME = 'testgrid-eks-cluster'
+        RDS_STACK_NAME = 'testgrid-rds-stack'  
         DB_USERNAME = 'root'
         DB_PASSWORD = '613296496' 
     }
@@ -144,7 +144,7 @@ pipeline {
 			"""),
                             string(
                                 name: 'product_testing_repo_url',
-                                defaultValue: 'https://github.com/Tharsanan1/apim-kubernetes-personal',
+                                defaultValue: 'https://github.com/Tharsanan1/APIM_testing',
                                 description: "Product's testing repository URL.",
                                 trim: true
                             ),
@@ -263,10 +263,8 @@ pipeline {
                         )
                         sh "kubectl wait --for=condition=ready pod   -l eks.amazonaws.com/fargate-profile=fp-default   --timeout='$service_startup_timeout's"
                     }
-                    
                     env.HOST_NAME=hostName.trim()
-                       
-                    sh "sh ./scripts-cluster/test.sh ${product_name}"
+                    sh "sh ./scripts-cluster/test.sh ${product_name} ${test_file_path}"
                 }
             }
         }
