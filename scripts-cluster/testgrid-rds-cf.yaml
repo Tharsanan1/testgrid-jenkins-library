@@ -12,7 +12,7 @@ Parameters:
     Type: String
 
 Resources:
-  APIMDB:
+  TESTGRIDDB:
     Type: AWS::RDS::DBInstance
     Properties:
       MasterUsername: !Ref pDbUser
@@ -23,7 +23,7 @@ Resources:
       StorageType: gp2
       PubliclyAccessible: True
       AllocatedStorage: "20"
-      DBInstanceIdentifier: apim-profile-automation-rds
+      DBInstanceIdentifier: testgrid-rds
       LicenseModel:
         !If [UseLicensedVersion, license-included, !Ref "AWS::NoValue"]
       Tags:
@@ -33,12 +33,12 @@ Resources:
       BackupRetentionPeriod: 0
 
 Outputs:
-  ApimDBJDBCConnectionString:
+  TestgridDBJDBCConnectionString:
     Description: JDBC connection string for the master database
-    Value: !Join ["", [!GetAtt [APIMDB, Endpoint.Address]]]
-  ApimDBJDBCPort:
+    Value: !Join ["", [!GetAtt [TESTGRIDDB, Endpoint.Address]]]
+  TestgridDBJDBCPort:
     Description: JDBC port
-    Value: !Join ["", [!GetAtt [APIMDB, Endpoint.Port]]]
+    Value: !Join ["", [!GetAtt [TESTGRIDDB, Endpoint.Port]]]
 
 Conditions:
   UseLicensedVersion:
