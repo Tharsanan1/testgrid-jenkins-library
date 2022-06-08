@@ -202,7 +202,7 @@ pipeline {
                     echo "==============================================\n\n\n\n"
                     withCredentials([[
                         $class: 'AmazonWebServicesCredentialsBinding',
-                        credentialsId: "aws-creds-tharsanan	",
+                        credentialsId: "AWS_CRED",
                         accessKeyVariable: 'AWS_ACCESS_KEY_ID',
                         secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
                     ]]) {
@@ -219,7 +219,7 @@ pipeline {
                     echo "==============================================\n\n\n\n"
                     withCredentials([[
                         $class: 'AmazonWebServicesCredentialsBinding',
-                        credentialsId: "aws-creds-tharsanan	",
+                        credentialsId: "AWS_CRED",
                         accessKeyVariable: 'AWS_ACCESS_KEY_ID',
                         secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
                     ]]) {
@@ -236,7 +236,7 @@ pipeline {
                     echo "==============================================\n\n\n\n"
                     withCredentials([[
                         $class: 'AmazonWebServicesCredentialsBinding',
-                        credentialsId: "aws-creds-tharsanan	",
+                        credentialsId: "AWS_CRED",
                         accessKeyVariable: 'AWS_ACCESS_KEY_ID',
                         secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
                     ]]) {
@@ -253,7 +253,7 @@ pipeline {
                     echo "==============================================\n\n\n\n"
                     withCredentials([[
                         $class: 'AmazonWebServicesCredentialsBinding',
-                        credentialsId: "aws-creds-tharsanan	",
+                        credentialsId: "AWS_CRED",
                         accessKeyVariable: 'AWS_ACCESS_KEY_ID',
                         secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
                     ]]) {
@@ -273,7 +273,7 @@ pipeline {
         always {
             withCredentials([[
                         $class: 'AmazonWebServicesCredentialsBinding',
-                        credentialsId: "aws-creds-tharsanan	",
+                        credentialsId: "AWS_CRED",
                         accessKeyVariable: 'AWS_ACCESS_KEY_ID',
                         secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
                     ]]) {

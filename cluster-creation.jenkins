@@ -39,7 +39,7 @@ pipeline {
                     
                     withCredentials([[
                         $class: 'AmazonWebServicesCredentialsBinding',
-                        credentialsId: "aws-creds-tharsanan	",
+                        credentialsId: "AWS_CRED",
                         accessKeyVariable: 'AWS_ACCESS_KEY_ID',
                         secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
                     ]]) {
@@ -59,7 +59,7 @@ pipeline {
                     echo "Deleting cluster in progress."
                     withCredentials([[
                         $class: 'AmazonWebServicesCredentialsBinding',
-                        credentialsId: "aws-creds-tharsanan	",
+                        credentialsId: "AWS_CRED",
                         accessKeyVariable: 'AWS_ACCESS_KEY_ID',
                         secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
                     ]]) {
