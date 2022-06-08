@@ -5,7 +5,7 @@ metadata:
   name: ${EKS_CLUSTER_NAME}
   region: ${EKS_CLUSTER_REGION}
 
-availabilityZones: ["us-east-1a"]
+availabilityZones: ["us-east-1a","us-east-1b"]
 
 nodeGroups:
   - name: ng-1
