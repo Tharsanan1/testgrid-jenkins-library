@@ -28,7 +28,7 @@ fi;
 
 cat ./scripts-cluster/cluster-blueprint-template.yaml | envsubst '${EKS_CLUSTER_NAME}' | envsubst '${EKS_CLUSTER_REGION}' > ./scripts-cluster/cluster-blueprint.yaml
 eksctl get cluster --region ${EKS_CLUSTER_REGION} -n ${EKS_CLUSTER_NAME} && echo "Cluster already exists" && exit 1
-eksctl create cluster -f ./scripts-cluster/cluster-blueprint.yaml || { echo "Failed to create the cluster. Try to clean up the created resources." ; eksctl delete cluster --region="${EKS_CLUSTER_REGION}" --name="${EKS_CLUSTER_NAME}" || echo "Failed to cleanup the resources using eksctl, trying to delete the cloudformation stacks." ; aws cloudformation delete-stack --region ${APIM_CLUSTER_REGION} --stack-name "eksctl-${EKS_CLUSTER_NAME}-cluster"  }
+eksctl create cluster -f ./scripts-cluster/cluster-blueprint.yaml || { echo "Failed to create the cluster. Try to clean up the created resources." ; eksctl delete cluster --region="${EKS_CLUSTER_REGION}" --name="${EKS_CLUSTER_NAME}" || echo "Failed to cleanup the resources using eksctl, trying to delete the cloudformation stacks." ; aws cloudformation delete-stack --region ${APIM_CLUSTER_REGION} --stack-name "eksctl-${EKS_CLUSTER_NAME}-cluster";  }
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.0.4/deploy/static/provider/aws/deploy.yaml 
 
 
