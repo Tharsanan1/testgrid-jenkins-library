@@ -77,7 +77,7 @@ pipeline {
 			"""),
                             string(
                                 name: 'deployment_script_repo_url',
-                                defaultValue: 'https://github.com/wso2/apim-test-integration/tree/4.1.0-profile-automation',
+                                defaultValue: 'https://github.com/wso2/apim-test-integration',
                                 description: 'Product deployment script repository.',
                                 trim: true
                             ),
