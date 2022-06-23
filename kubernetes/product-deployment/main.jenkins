@@ -278,7 +278,7 @@ pipeline {
                         )
                         sh "kubectl wait --for=condition=ready pod   -l product='$product_name'   --timeout='$service_startup_timeout's --namespace='$kubernetes_namespace'"
                         env.HOST_NAME=hostName.trim()
-                        sh "./kubernetes/product-deployment/scripts/test.sh ${product_name} ${test_file_path}"
+                        sh "./kubernetes/product-deployment/scripts/test.sh ${product_name} ${test_file_path}"  
                     }
                 }
             }
@@ -296,10 +296,19 @@ pipeline {
                         echo "Uninstall ${product_name} in cluster"
                         echo "==============================================\n\n\n\n"
                         sh "./kubernetes/product-deployment/scripts/cleanup.sh ${product_name}"
-                        
+                        echo "Status of pipeline: ${currentBuild.fullDisplayName}"
+                        script {
+                            sendEmail()
+                        }
                     }
             
             cleanWs deleteDirs: true, notFailBuild: true
         }
     }
+}
+
+def sendEmail() {
+    emailext(to: "ktharsanan@gmail.com",
+            subject: "Subject",
+            body: "content", mimeType: 'text/html')
 }
