@@ -353,10 +353,6 @@ def sendEmail() {
             <td>${db_engine}</td>
         </tr>
         <tr>
-            <td>Databases</td>
-            <td>${database_list}</td>
-        </tr>db_version
-         <tr>
             <td>Databases version</td>
             <td>${db_version}</td>
         </tr>
