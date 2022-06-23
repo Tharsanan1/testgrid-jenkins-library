@@ -322,7 +322,7 @@ def sendEmail() {
         </div>
         <table border="0" cellspacing="0" cellpadding="0" valign='top'>
             <td>
-                <h1>Scenario test results</span></h1>
+                <h1>Kubernetes deployment test results</span></h1>
             </td>
             <td>
                 <img src="http://cdn.wso2.com/wso2/newsletter/images/nl-2017/nl2017-wso2-logo-wb.png"/>
@@ -376,10 +376,10 @@ def sendEmail() {
         """
     subject="[TestGrid][${product_name.toUpperCase()}:${product_version}]]-Build ${currentBuild.currentResult}-#${env.BUILD_NUMBER}"
     senderEmailGroup=""
-    if(product_name.equals("apim")){
-        senderEmailGroup = "integration-builder@wso2.com"
-    }
-    emailext(to: "${senderEmailGroup},tharsanan@wso2.com",
+    // if(product_name.equals("apim")){
+    //     senderEmailGroup = "integration-builder@wso2.com"
+    // }
+    emailext(to: "tharsanan@wso2.com",//"${senderEmailGroup},tharsanan@wso2.com",
             subject: subject,
             body: content, mimeType: 'text/html')
 }
