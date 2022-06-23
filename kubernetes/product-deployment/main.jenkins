@@ -311,7 +311,7 @@ pipeline {
 }
 
 def sendEmail(test) {
-    echo test
+    echo "test: ${test}"
     if (currentBuild.currentResult.equals("SUCCESS")){
         headerColour = "#05B349"
     }else{
