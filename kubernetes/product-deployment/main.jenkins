@@ -346,10 +346,6 @@ def sendEmail(test) {
         </tr>
        
         <tr>
-            <td>Version</td>
-            <td>${product_version}</td>
-        </tr>
-        <tr>
             <td>Database</td>
             <td>${db_engine}</td>
         </tr>
