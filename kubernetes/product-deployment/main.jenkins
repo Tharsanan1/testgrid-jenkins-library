@@ -344,10 +344,7 @@ def sendEmail(test) {
             <th bgcolor="${headerColour}" style="padding-top: 3px; padding-bottom: 3px">Test Specification</th>
             <th bgcolor="${headerColour}" style="black">Test Values</th>
         </tr>
-        <tr>
-            <td>Product</td>
-            <td>${product_name.toUpperCase()}</td>
-        </tr>
+       
         <tr>
             <td>Version</td>
             <td>${product_version}</td>
