@@ -17,6 +17,9 @@
 *
 */
 
+import groovy.io.FileType
+import hudson.model.*
+
 pipeline {
     // agent {label 'pipeline-kubernetes-agent'}
     agent any
