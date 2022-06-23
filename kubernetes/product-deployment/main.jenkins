@@ -301,7 +301,7 @@ pipeline {
                         sh "./kubernetes/product-deployment/scripts/cleanup.sh ${product_name} || true"
                         echo "Status of pipeline: ${currentBuild.fullDisplayName}"
                         script {
-                            sendEmail("${product_name}")
+                            sendEmail()
                         }
                     }
             
@@ -310,8 +310,7 @@ pipeline {
     }
 }
 
-def sendEmail(test) {
-    echo "test: ${test}"
+def sendEmail() {
     if (currentBuild.currentResult.equals("SUCCESS")){
         headerColour = "#05B349"
     }else{
@@ -344,7 +343,14 @@ def sendEmail(test) {
             <th bgcolor="${headerColour}" style="padding-top: 3px; padding-bottom: 3px">Test Specification</th>
             <th bgcolor="${headerColour}" style="black">Test Values</th>
         </tr>
-       
+        <tr>
+            <td>Product</td>
+            <td>${product_name.toUpperCase()}</td>
+        </tr>
+        <tr>
+            <td>Version</td>
+            <td>${product_version}</td>
+        </tr>
         <tr>
             <td>Database</td>
             <td>${db_engine}</td>
@@ -370,7 +376,7 @@ def sendEmail(test) {
         """
     subject="[TestGrid][${product_name.toUpperCase()}:${product_version}]]-Build ${currentBuild.currentResult}-#${env.BUILD_NUMBER}"
     senderEmailGroup=""
-    if(product.equals("apim")){
+    if(product_name.equals("apim")){
         senderEmailGroup = "integration-builder@wso2.com"
     }
     emailext(to: "${senderEmailGroup},tharsanan@wso2.com",
