@@ -308,6 +308,11 @@ pipeline {
 }
 
 def sendEmail() {
+    if (currentBuild.currentResult.equals("SUCCESS")){
+        headerColour = "#05B349"
+    }else{
+        headerColour = "#ff0000"
+    }
     content="""
         <div style="padding-left: 10px">
             <div style="height: 4px; background-image: linear-gradient(to right, orange, black);">
