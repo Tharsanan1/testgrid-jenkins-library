@@ -29,9 +29,13 @@ nodeGroups:
     desiredCapacity: 0
     minSize: 0
     maxSize: 1
+    tags:
+      "TestGrid-kubernetes-deployment-pipeline-nodegroup": ""
 
 fargateProfiles:
   - name: fp-default
+    tags:
+      "TestGrid-kubernetes-deployment-pipeline-fargate": ""
     selectors:
       # All workloads in the "default" Kubernetes namespace will be
       # scheduled onto Fargate:
