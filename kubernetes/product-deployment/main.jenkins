@@ -24,7 +24,7 @@ pipeline {
     // agent {label 'pipeline-kubernetes-agent'}
     agent any
     environment {
-        EKS_CLUSTER_REGION = 'us-east-1'   
+        EKS_CLUSTER_REGION = 'us-west-1'   
         EKS_CLUSTER_NAME = 'testgrid-eks-cluster'
         RDS_STACK_NAME = 'testgrid-rds-stack'  
         DB_USERNAME = 'root'
