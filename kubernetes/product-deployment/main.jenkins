@@ -252,12 +252,19 @@ pipeline {
                     echo "\n\n\n\n=============================================="
                     echo "Deploy ${product_name} into cluster"
                     echo "==============================================\n\n\n\n"
-                    withCredentials([[
-                        $class: 'AmazonWebServicesCredentialsBinding',
-                        credentialsId: "AWS_CRED",
-                        accessKeyVariable: 'AWS_ACCESS_KEY_ID',
-                        secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
-                    ]]) {
+                    withCredentials([
+                        [
+                            $class: 'UsernamePasswordMultiBinding', 
+                            credentialsId:'wso2-subscription',
+                            usernameVariable: 'WSO2_SUBSCRIPTION_USERNAME', 
+                            passwordVariable: 'WSO2_SUBSCRIPTION_PASSWORD'],
+                        [
+                            $class: 'AmazonWebServicesCredentialsBinding',
+                            credentialsId: "AWS_CRED",
+                            accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+                            secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
+                        ]
+                    ]) {
                         sh "./kubernetes/product-deployment/scripts/deploy.sh ${product_name}"
                     }
                 }
