@@ -73,9 +73,9 @@ do
     # When the CFN YAML has issues this will terminate the flow.
     if [[ $? != 0 ]];
     then
-        log_error "CloudFormation file errors identified!"
-        # refactor the currentScript var to contain path 
-        bash ${currentScript}/post-actions.sh ${deploymentName}
+        log_error "CloudFormation deployment error occurred!"
+        aws cloudformation describe-stack-events --stack-name ${stackName} --region ${region} |  jq -r '.StackEvents[] | select(.ResourceStatus=="CREATE_FAILED")'
+        bash ${currentScript}/../post-actions.sh ${deploymentName}
         exit 1
     fi
 
@@ -93,7 +93,7 @@ do
         log_info "Stack:${stackName} creation was successfull!"
     else
         log_error "Stack:${stackName} creation failed! Error:${stackStatus}"
-        bash ${currentScript}/post-actions.sh ${deploymentName}
+        bash ${currentScript}/../post-actions.sh ${deploymentName}
         exit 1
     fi
 

@@ -21,9 +21,6 @@ import hudson.model.*
 
 def deploymentDirectories = []
 def updateType = ""
-def s3BucketName = "testgrid-pipeline-logs"
-def s3BuildLogPath = ""
-def s3PathConstructor = ""
 
 pipeline {
 agent {label 'pipeline-agent'}
@@ -31,30 +28,15 @@ stages {
     stage('Clone CFN repo') {
         steps {
             script {
-                aws_repo_branch=""
-                if (use_staging.toBoolean()) {
-                    if (use_wum.toBoolean()){
-                        aws_repo_branch="${product_version}-staging-new"
-                        updateType="wum"
-                        s3PathConstructor="staging/wum"
-                    }else{
-                        aws_repo_branch="${product_version}-u2-staging-new"
-                        updateType="u2"
-                        s3PathConstructor="staging/u2"
-                    }
-                } else {
-                    if (use_wum.toBoolean()){
-                        aws_repo_branch="${product_version}-new"
-                        updateType="wum"
-                        s3PathConstructor="wum"
-                    }else{
-                        aws_repo_branch="${product_version}-u2-new"
-                        updateType="u2"
-                        s3PathConstructor="u2"
-                    }
+                cfn_repo_url="https://github.com/wso2/testgrid.git"
+                cfn_repo_branch="master"
+                if (use_wum.toBoolean()){
+                    updateType="wum"
+                }else{
+                    updateType="u2"
                 }
-                dir("aws-"+product) {
-                    git branch: "${aws_repo_branch}",
+                dir("testgrid") {
+                    git branch: "${cfn_repo_branch}",
                     credentialsId: "WSO2_GITHUB_TOKEN",
                     url: "${cfn_repo_url}"
                 }
@@ -109,15 +91,24 @@ stages {
                     ./scripts/write-parameter-file.sh "ProductVersion" ${product_version} "${WORKSPACE}/parameters/parameters.json"
                     echo "Writting product deployment region to parameter file"
                     ./scripts/write-parameter-file.sh "Region" ${product_deployment_region} "${WORKSPACE}/parameters/parameters.json"
-                    echo "Writing custom URL to parameter file"
-                    ./scripts/write-parameter-file.sh "CustomURL" ${custom_url} "${WORKSPACE}/parameters/parameters.json"
-                '''
-                //Generate S3 Log output path
-                s3BuildLogPath = "${s3BucketName}/artifacts/jobs/${s3PathConstructor}/${product}-${product_version}/build-${BUILD_NUMBER}"
-                println "Your Logs will be uploaded to: s3://"+s3BuildLogPath
-                sh'''
-                    echo "Writting S3 Log uploading endpoint to parameter file"
-                    ./scripts/write-parameter-file.sh "S3OutputBucketLocation" '''+s3BuildLogPath+''' "${WORKSPACE}/parameters/parameters.json"
+                    echo "Writting product instance Type to parameter file"
+                    ./scripts/write-parameter-file.sh "WSO2InstanceType" ${product_instance_type} "${WORKSPACE}/parameters/parameters.json"
+                    echo "Writting product deployment cfn loction to parameter file"
+                    ./scripts/write-parameter-file.sh "CloudformationLocation" ${cloudformation_location} "${WORKSPACE}/parameters/parameters.json"
+                    echo "Writting product deployment ALB Certificate ARN to parameter file"
+                    ./scripts/write-parameter-file.sh "ALBCertificateARN" ${alb_cert_arn} "${WORKSPACE}/parameters/parameters.json"
+                    echo "Writting product deployment Product Repository to parameter file"
+                    ./scripts/write-parameter-file.sh "ProductRepository" ${product_repository} "${WORKSPACE}/parameters/parameters.json"
+                    echo "Writting product deployment Product Test Branch to parameter file"
+                    ./scripts/write-parameter-file.sh "ProductTestBranch" ${product_test_branch} "${WORKSPACE}/parameters/parameters.json"
+                    echo "Writting product deployment Product Test script location to parameter file"
+                    ./scripts/write-parameter-file.sh "ProductTestScriptLocation" ${product_test_script} "${WORKSPACE}/parameters/parameters.json"
+                    echo "Writting product update type to parameter file"
+                    ./scripts/write-parameter-file.sh "UpdateType" '''+updateType+''' "${WORKSPACE}/parameters/parameters.json"
+                    echo "Writting test type to parameter file"
+                    ./scripts/write-parameter-file.sh "TestType" "intg" "${WORKSPACE}/parameters/parameters.json"
+                    echo "Writting product Surefire Report Directory"
+                    ./scripts/write-parameter-file.sh "SurefireReportDir" ${surefire_report_dir} "${WORKSPACE}/parameters/parameters.json"
                     echo "Writing to parameter file completed!"
                     echo --- Preparing parameter files for deployments! ---
                     ./scripts/deployment-builder.sh ${product} ${product_version} '''+updateType+'''
@@ -151,15 +142,8 @@ stages {
 post {
     always {
         sh '''
-            echo "Arranging the log files!"
-            parameters_directory="${WORKSPACE}/parameters/parameters.json"
-
-            localLogDir="build-${BUILD_NUMBER}"
-            mkdir -p ${localLogDir}
-            aws s3 cp s3://'''+s3BuildLogPath+'''/ ${localLogDir} --recursive --quiet
             echo "Job is completed... Deleting the workspace directories!"
         '''
-        archiveArtifacts artifacts: "build-${env.BUILD_NUMBER}/**/*.*", fingerprint: true
         script {
             sendEmail(deploymentDirectories, updateType)
         }
@@ -173,45 +157,14 @@ def create_build_jobs(deploymentDirectory){
         stage("${deploymentDirectory}"){
             stage("Deploy ${deploymentDirectory}") {
                 println "Deploying Stack:- ${deploymentDirectory}..."
-                String[] cloudformationLocation = []
-                switch(product) {
-                    case "apim":
-                        cloudformationLocation = ["${WORKSPACE}/aws-apim/apim/Minimum-HA/apim.yaml"]
-                        break;
-                    case "is":
-                        // The deployment is done in the indexed order
-                        cloudformationLocation = ["${WORKSPACE}/aws-is/is/Minimum-HA/identity.yaml", "${WORKSPACE}/aws-is/is-samples/test-is-samples.yml"]
-                        break;
-                    case "ei":
-                        cloudformationLocation = ["${WORKSPACE}/aws-ei/integrator/Minimum-HA/integrator-ha.yaml"]
-                        break;
-                    case "esb":
-                        cloudformationLocation = ["${WORKSPACE}/aws-esb/esb/Minimum-HA/esb-ha.yaml"]
-                        break;
-                    case "mi":
-                        cloudformationLocation = ["${WORKSPACE}/aws-mi/micro-integrator.yaml"]
-                        break;
-                    case "ob":
-                        cloudformationLocation = ["${WORKSPACE}/aws-ob/obam-with-obkm.yaml"]
-                        break;
-                    default:
-                        println("Product name is incorrect! Existing the execution");
-                        currentBuild.result = 'ABORTED'
-                }
                 sh'''
-                    ./scripts/deployment-handler.sh '''+deploymentDirectory+''' '''+cloudformationLocation+''' 
+                    ./scripts/deployment-handler.sh '''+deploymentDirectory+''' ${WORKSPACE}/${cloudformation_location} 
                 '''
                 stage("Testing ${deploymentDirectory}") {
-                    println "Deployment testing..."
+                    println "Deployment Integration testing..."
                     sh'''
-                        ./scripts/test-deployment.sh '''+deploymentDirectory+''' ${product_repository} ${product_test_branch} ${product_test_script}
+                        ./scripts/intg-test-deployment.sh '''+deploymentDirectory+''' ${product_repository} ${product_test_branch} ${product_test_script}
                     '''
-                    stage("Uploading results to ${deploymentDirectory}") {
-                        println "Upoading logs..."
-                        sh'''
-                            ./scripts/post-actions.sh '''+deploymentDirectory+'''
-                        '''
-                    }
                 }
             }
         }
@@ -235,7 +188,7 @@ def sendEmail(deploymentDirectories, updateType) {
         </div>
         <table border="0" cellspacing="0" cellpadding="0" valign='top'>
             <td>
-                <h1>Scenario test results</span></h1>
+                <h1>Integration test results</span></h1>
             </td>
             <td>
                 <img src="http://cdn.wso2.com/wso2/newsletter/images/nl-2017/nl2017-wso2-logo-wb.png"/>
@@ -311,9 +264,9 @@ def sendEmail(deploymentDirectories, updateType) {
         <em>Tested by WSO2 Jenkins TestGrid Pipeline.</em>
         </div>
         """
-    subject="[TestGrid][${updateType.toUpperCase()}][${product.toUpperCase()}:${product_version}][SCE]-Build ${currentBuild.currentResult}-#${env.BUILD_NUMBER}"
+    subject="[TestGrid][${updateType.toUpperCase()}][${product.toUpperCase()}:${product_version}][INTG]-Build ${currentBuild.currentResult}-#${env.BUILD_NUMBER}"
     senderEmailGroup=""
-    if(product.equals("apim") || product.equals("ei") || product.equals("esb") || product.equals("mi")){
+    if(product.equals("wso2am") || product.equals("ei") || product.equals("esb") || product.equals("mi")){
         senderEmailGroup = "integration-builder@wso2.com"
     }else if(product.equals("is")) {
         senderEmailGroup = "iam-builder@wso2.com"

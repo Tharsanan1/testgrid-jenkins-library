@@ -9,18 +9,19 @@
         "DB": "",
         "Product": "",
         "ProductVersion": "",
-        "KeyPairName": "tg-pipeline-stack-test",
+        "KeyPairName": "deployment-prod",
         "WSO2InstanceType": "t2.medium",
         "CertificateName": "wso2_testgrid",
         "DBUsername": "tgdbuser",
         "DBPassword": "",
         "DBAllocationStorage": "20",
-        "DBInstanceType": "db.t2.medium",
+        "DBInstanceType": "db.m5.large",
         "UniqueIdentifier": "",
         "StackName": "",
         "S3AccessKeyID": "",
         "S3SecretAccessKey": "",
         "Region": "us-east-2",
-        "AMI": "ami-0b707e6db70f15f97"
+        "AMI": "ami-0b707e6db70f15f97",
+        "CustomURL": ""
     }
 }

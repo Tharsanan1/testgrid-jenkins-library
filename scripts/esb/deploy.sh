@@ -28,19 +28,12 @@ currentScript=$(dirname $(realpath "$0"))
 
 source ${currentScript}/../common-functions.sh
 
-counter=0
 stackName=$(extractParameters "StackName" ${parameterFilePath})
 tempStackName=${stackName}
 for cloudformationFileLocation in ${cloudformationFileLocations[@]}
 do
     parameterFilePath="${deploymentDirectory}/parameters.json"
-    # When one deployment depends on several CFNs then the stackname will be appened
-    # with an itteration number
-    if [[ ${#cloudformationFileLocations[@]} -gt 1 ]];
-    then
-        stackName="${tempStackName}-${counter}"
-    fi
-    
+
     region=$(extractParameters "Region" ${parameterFilePath})
     updateJsonFile "StackName" ${stackName} ${parameterFilePath}
     
@@ -61,7 +54,7 @@ do
         exit 1
     fi
 
-    # When the Deployment has issues this will terminate the flow.
+    # When the Deployment has issues this will terminate the flow
     stackStatus=$(aws cloudformation describe-stacks --stack-name ${stackName} --region ${region} | jq -r '.Stacks[0].StackStatus')
     if [[ ${stackStatus} == "CREATE_COMPLETE" ]];
     then
@@ -74,7 +67,7 @@ do
 
     # Get the deployment outputs to an array
     getCfnOutput ${stackName} ${region}
-    
+
     # When there are multiple deployments then the CFNs are dependant to each other
     # Therefore adding the single outputs to the JSON parameter file as well
     if [[ ${#cloudformationFileLocations[@]} -gt 1 ]];
@@ -84,5 +77,4 @@ do
     fi
 
     writePropertiesFile
-    counter=$((counter+1))
 done
